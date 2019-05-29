@@ -1,30 +1,38 @@
 class Room{
 
-   constructor(name, player, board){
+   constructor(name, player_name, player_socket, board){
       this.name = name
-      this.player1 = player
+      this.first_player = {
+         id: player_name,
+         socket: player_socket
+      }
       this.board = board
-      this.player2 = null
+      this.second_player = {
+         id: '',
+         socket: null
+      }
    }
 
    is_complete(){
-      return this.player2
+      return this.second_player.socket !== null
    }
 
-   set_first_player(socket){
-      this.player1 = socket
+   set_first_player(id, socket){
+      this.first_player.id = id
+      this.first_player.socket = socket
    }
 
-   set_second_player(socket){
-      this.player2 = socket
+   set_second_player(id, socket){
+      this.second_player.id = id
+      this.second_player.socket = socket
    }
 
    get_first_player(){
-      return this.player1
+      return this.first_player
    }
 
    get_second_player(){
-      return this.player2
+      return this.second_player
    }
 
    get_name(){
@@ -33,10 +41,10 @@ class Room{
 
    send_data_from(sender_id, data, msg = 'data'){
       if(this.is_complete()){
-         if(this.player1.id === sender_id){
-            this.player2.emit(msg, data)
+         if(this.first_player.id === sender_id){
+            this.second_player.socket.emit(msg, data)
          } else {
-            this.player1.emit(msg, data)
+            this.first_player.socket.emit(msg, data)
          }
       }
    }
@@ -47,8 +55,9 @@ class Room{
       return this.turn
    }
 
-   change_turn(){
+   change_turn_and_board(board){
       this.turn = !this.turn
+      this.board = board
    }
 
    get_board(){
@@ -57,12 +66,16 @@ class Room{
 
    start(){
       this.turn = Math.random() > 0.5
-      this.player1.emit('start', {
+      this.first_player.socket.emit('start', {
+         another_player: {id: this.second_player.id},
+         group_name: this.name,
          board: this.board,
          your_turn: this.turn,
          initialized_with_my_board: true
       })
-      this.player2.emit('start', {
+      this.second_player.socket.emit('start', {
+         another_player: {id: this.first_player.id},
+         group_name: this.name,
          board: this.board,
          your_turn: !this.turn,
          initialized_with_my_board: false
@@ -71,19 +84,19 @@ class Room{
 
    end(rooms, players_map){
       if(this.is_complete()){
-         this.player2.disconnect()
-         delete players_map[this.player2.id]
-         this.player2.leave(this.name)
+         this.second_player.socket.disconnect()
+         delete players_map[this.second_player.id]
+         this.second_player.socket.leave(this.name)
       }
-      this.player1.disconnect()
-      delete players_map[this.player1.id]
-      this.player1.leave(this.name)
+      this.first_player.socket.disconnect()
+      delete players_map[this.first_player.id]
+      this.first_player.socket.leave(this.name)
       return rooms.filter(r => r !== this)
    }
 
    is_my_turn(id){
       if(this.is_complete()){
-         if((this.player2.id === id && this.turn === false)||(this.player1.id === id && this.turn === true)){
+         if((this.second_player.id === id && this.turn === false)||(this.first_player.id === id && this.turn === true)){
             return true
          } else {
             return false
@@ -91,6 +104,14 @@ class Room{
       } else {
          return false
       }
+   }
+
+   is_lose(){
+      return this.board[0][0] === '0'
+   }
+
+   get_another_player(id){
+      return this.first_player.id === id? this.second_player: this.first_player
    }
 }
 

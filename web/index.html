@@ -13,6 +13,7 @@
    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
       integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
    <script src="/socket.io.js"></script>
+   <script src="/faker.js"></script>
       
    <script>
          const l = 10;
@@ -22,8 +23,15 @@
          function start() {
             ends = false
             socket = io();
+
+            $("#turn").text("")
+            $("#another_player").text("")
+            $("#room_name").text("")
+            $("#end").text("")
+
             socket.emit('init', {
-               board: data
+               board: data,
+               id: faker.name.findName()
             })
 
             socket.on('err', (data) => {
@@ -41,6 +49,10 @@
 
                turn = data.your_turn
                turn_show()
+
+               $('#another_player').text('opp name: ' + data.another_player.id)
+
+               $('#room_name').text(data.room_name)
 
                change_table_by_board(data.board)
             })
@@ -64,8 +76,13 @@
                $('#turn').text('Winner Winner Chicken Dinner')
             })
 
-            socket.on('end', () => {
+            socket.on('lose', () => {
+               $('#turn').text('you are a loser')
+            })
+
+            socket.on('end', (data) => {
                ends = true
+               $('#end').text(`loser: ${data.loser} winner: ${data.winner}`)
             })
          }
 
@@ -117,7 +134,7 @@
          }
 
          function game_over(){
-            $('#turn').text('you are a looser')
+            $('#turn').text('you are a loser')
             $('#mainTable').empty()
             socket.emit('lose')
          }
@@ -191,7 +208,9 @@
 
    <a id="button" onclick="start()"><span id="button_text">start</span></a>
    <p id="turn"></p>
-
+   <p id="another_player"></p>
+   <p id="room_name"></p>
+   <p id="end"></p>
 </body>
 
 </html>
