@@ -26,6 +26,7 @@ count = () => {
 }
 
 io.on('connection', (socket) => {
+   console.log('unknown connection')
    let id = socket.id
    let current_room, current_room_name
 
