@@ -1,6 +1,7 @@
 const room = require('./Room')
 const err = require('./errors')
 const https = require('https')
+const morgan = require('morgan')
 const express = require('express')
 const app = express()
 const http = require('http').Server(app)
@@ -10,10 +11,11 @@ const URL = process.env.URL || '127.0.0.1'
 
 process.env.PWD = process.cwd()
 
-app.use(express.static(process.env.PWD + '/web'));
+app.use(express.static(process.env.PWD + '/web'))
+app.use(morgan('combined'))
 
 app.get('/', (req, res) => {
-   res.sendFile(process.env.PWD + '/web/index.html');
+   res.sendFile(process.env.PWD + '/web/index.html')
 });
 
 // socket.io
