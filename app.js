@@ -149,57 +149,58 @@ io.on('connection', (socket) => {
    })
 
    socket.once('disconnect', () => {
-      if(current_room){
-         //initialized socket
-         if(current_room.get_status() === -1){
-            // room is ended by canceling or long time disconnection
-            delete players_map[id]
-            socket.leave(current_room_name)
+      // if(current_room){
+      //    //initialized socket
+      //    if(current_room.get_status() === -1){
+      //       // room is ended by canceling or long time disconnection
+      //       delete players_map[id]
+      //       socket.leave(current_room_name)
 
-            console.log(`player ${id} removed`)
-         } else {
-            let life_time = 30000
+      //       console.log(`player ${id} removed`)
+      //    } else {
+      //       let life_time = 30000
 
-            // a client disconnected
-            console.log('hey inja')
+      //       // a client disconnected
+      //       console.log('hey inja')
             
-            socket.to(current_room_name).emit('pause', { life_time })
-            current_room.set_status(0)
+      //       socket.to(current_room_name).emit('pause', { life_time })
+      //       current_room.set_status(0)
 
-            // suspend
-            players_map[id]=null
+      //       // suspend
+      //       players_map[id]=null
             
-            disconnection_timeout = setTimeout(() => {
-               // check that client comes back or not!
-               if(!players_map[id]){
-                  let winner = current_room.get_another_player(id)
-                  let loser = current_room.find_by_id(id)
+      //       disconnection_timeout = setTimeout(() => {
+      //          // check that client comes back or not!
+      //          if(!players_map[id]){
+      //             let winner = current_room.get_another_player(id)
+      //             let loser = current_room.find_by_id(id)
 
-                  io.to(current_room_name).emit('end', {
-                     code: 2,
-                     reason: `player ${loser} disconnected`,
-                     winner: winner.id,
-                     loser: loser.id
-                  })
-                  current_room.set_status(-1)
+      //             io.to(current_room_name).emit('end', {
+      //                code: 2,
+      //                reason: `player ${loser} disconnected`,
+      //                winner: winner.id,
+      //                loser: loser.id
+      //             })
+      //             current_room.set_status(-1)
 
-                  winner.socket.disconnect()
+      //             winner.socket.disconnect()
 
-                  delete players_map[id]
-                  socket.leave(current_room_name)
+      //             delete players_map[id]
+      //             socket.leave(current_room_name)
 
-                  current_room.destroy()
-                  room_list = room_list.filter(r => r !== current_room)
+      //             current_room.destroy()
+      //             room_list = room_list.filter(r => r !== current_room)
 
-                  console.log(`room ${current_room_name} removed`)
-               }
-            }, life_time)
-         }
+      //             console.log(`room ${current_room_name} removed`)
+      //          }
+      //       }, life_time)
+      //    }
 
-         console.log(`player ${id} disconnected`)
-      } else {
-         console.log('unknown disconnection ' + socket.id)
-      }
+      //    console.log(`player ${id} disconnected`)
+      // } else {
+      //    console.log('unknown disconnection ' + socket.id)
+      // }
+      end(1, `${id} left the game`)
    })
 
    socket.once('cancel', () => {
