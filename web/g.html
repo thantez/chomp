@@ -17,7 +17,7 @@
       
    <script>
          const l = 10;
-         let data = []
+         let data = [], gBoard
          let socket, turn, ends, id, pause_flag = false, canceled_game = false
          
          function start() {
@@ -57,6 +57,8 @@
 
                $('#room_name').text(data.room_name)
 
+               gBoard = data.board
+
                change_table_by_board(data.board)
             })
 
@@ -93,16 +95,18 @@
             })
 
             socket.on('data', (data) => {
+               let board = gBoard;
                let num = data.num
-               let j = num % 10
+               let x = num % 10
                num = parseInt(num / 10)
-               let i = num
+               let y = num
 
-               for(; i < l; i++){
-                  for(; j < l; j++){
+               for(let i = y; i < l; i++){
+                  for(let j = x; j < l; j++){
                      board[i][j]=0
                   }
                }
+
                change_table_by_board(board)
 
                turning()
