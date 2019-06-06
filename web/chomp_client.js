@@ -102,15 +102,17 @@ function mousePressed(){
       return
    let x = Math.floor(mouseX / WIDTH)
    let y = Math.floor(mouseY / HEIGHT)
+   let num = x * 10 + y
    for(let i = x; i < gameLength; i++){
       for(let j = y; j < gameLength; j++){
          board[i][j] = 0;
       }
    }
-   loop();
+   
    if(socket){
-      socket.emit('data', {board})
+      socket.emit('data', { board, num })
    }
+   loop();
    noLoop();
 }
 
@@ -195,6 +197,16 @@ function start() {
 
    socket.on('data', (data) => {
       board = data.board
+      let num = data.num
+      let j = num % 10
+      num = parseInt(num / 10)
+      let i = num
+
+      for(; i < gameLength; i++){
+         for(; j < gameLength; j++){
+            board[i][j]=0
+         }
+      }
 
       turning()
    })

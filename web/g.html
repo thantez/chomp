@@ -93,7 +93,17 @@
             })
 
             socket.on('data', (data) => {
-               change_table_by_board(data.board)
+               let num = data.num
+               let j = num % 10
+               num = parseInt(num / 10)
+               let i = num
+
+               for(; i < l; i++){
+                  for(; j < l; j++){
+                     board[i][j]=0
+                  }
+               }
+               change_table_by_board(board)
 
                turning()
             })

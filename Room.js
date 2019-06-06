@@ -110,8 +110,11 @@ class Room{
       }
    }
 
-   is_lose(){
-      return this.board[0][0] === '0'
+   is_lose(num = undefined){
+      if(num){
+         return num === 0
+      }
+         return this.board[0][0] == 0
    }
 
    get_another_player(id){
