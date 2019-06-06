@@ -18,11 +18,6 @@ class Room{
       return this.second_player.socket !== null
    }
 
-   set_first_player(id, socket){
-      this.first_player.id = id
-      this.first_player.socket = socket
-   }
-
    set_second_player(id, socket){
       this.second_player.id = id
       this.second_player.socket = socket
@@ -94,7 +89,6 @@ class Room{
    }
 
    destroy(){
-      this.first_player = undefined
       this.second_player = undefined
    }
 
