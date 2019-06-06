@@ -1,216 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-   <link rel="stylesheet" href="style.css">
-   <title>Chomp</title>
-</head>
-
-<body>
+   <title>Document</title>
+   <link rel="stylesheet" type="text/css" href="theme.css">
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.8.0/p5.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.8.0/addons/p5.dom.js"></script>
    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
       integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
    <script src="/socket.io.js"></script>
    <script src="/faker.js"></script>
-      
-   <script>
-         const l = 10;
-         let data = []
-         let socket, turn, ends
-         
-         function start() {
-            ends = false
-            socket = io();
-
-            $("#turn").text("")
-            $("#another_player").text("")
-            $("#room_name").text("")
-            $("#end").text("")
-
-            socket.emit('init', {
-               board: data,
-               id: faker.name.findName()
-            })
-
-            socket.on('err', (data) => {
-               alert(data.msg)
-            })
-
-            socket.on('wait', () => {
-               $("#button_text").text('wait...')
-               $("#button").attr("onclick","")
-            })
-
-            socket.on('start', (data) => {
-               $("#button_text").text('cancel')
-               $("#button").attr("onclick","cancel()")
-
-               turn = data.your_turn
-               turn_show()
-
-               $('#another_player').text('opp name: ' + data.another_player.id)
-
-               $('#room_name').text(data.room_name)
-
-               change_table_by_board(data.board)
-            })
-
-            socket.on('disconnect', () => {
-               $("#button_text").text('start')
-               $("#button").attr("onclick","start()")
-               if(!ends){
-                  turn_off()
-               }
-               create_table()
-            })
-
-            socket.on('data', (data) => {
-               change_table_by_board(data.board)
-
-               turning()
-            })
-
-            socket.on('win', () => {
-               $('#turn').text('Winner Winner Chicken Dinner')
-            })
-
-            socket.on('lose', () => {
-               $('#turn').text('you are a loser')
-            })
-
-            socket.on('end', (data) => {
-               ends = true
-               $('#end').text(`loser: ${data.loser} winner: ${data.winner}`)
-            })
-         }
-
-         function cancel(){
-            socket.emit('cancel')
-            turn_off()
-         }
-
-         function clicking(e, id){
-            if(id==='td:0:0'){
-               return;
-            }
-            let idDetail = id.split(':')
-            let elem = idDetail[0]
-            let i = row = parseInt(idDetail[1])
-            let j = col = parseInt(idDetail[2])
-            while(i < l){
-               j = col
-               if(col === 0){
-                  try{
-                     document.getElementById('t:'+i).remove();
-                  } catch (e) {}
-                  while(j < l){
-                     data[i][j] = 0
-                     j++;
-                  }
-               } else {
-                  while(j < l){
-                     try{
-                        document.getElementById(elem+':'+i+':'+j).remove();
-                        data[i][j] = 0
-                     } catch (e){}
-                     j++;
-                  }
-               }
-               i++;
-            }
-         }
-         
-         function game_clicked(e, id){
-            if (turn) {
-               clicking(e, id)
-               socket.emit('data', {
-                  board: data
-               })
-               turning()
-            }
-            $('#turn').prop('color', 'red')
-         }
-
-         function game_over(){
-            $('#turn').text('you are a loser')
-            $('#mainTable').empty()
-            socket.emit('lose')
-         }
-
-         $(document).ready(create_table)
-
-         function create_table(){
-            $('#mainTable').remove();
-            data = [];
-
-            let mainTable = jQuery('<div/>', {
-               id: 'mainTable'
-            }).appendTo('body')            
-
-            for(let i = 0; i < l; i++){
-               let table = jQuery('<table/>', {
-                  id: 't:'+i
-               }).appendTo(mainTable)
-               let tr = jQuery('<tr/>',{
-                  id: 'tr:'+i
-               }).appendTo(table)
-               let rowData = []
-               for(let j = 0; j < l; j++){
-                  let td = jQuery('<td/>',{
-                     id: 'td:'+i+':'+j,
-                     onclick:'clicking(this, id)'
-                  }).appendTo(tr)
-                  rowData.push(1)
-               }
-               data.push(rowData)
-            }
-         }
-
-         function change_table_by_board(board){
-            create_table()
-            data = board;
-            console.log(data)
-            for(let i = board.length-1; i>= 0; i--){
-               for(let j = board[i].length-1; j>= 0; j--){
-                  let elem = document.getElementById('td:'+i+':'+j)
-                  if(board[i][j] === 0){
-                     if(j===0){
-                        document.getElementById('t:'+i).remove();
-                        break;
-                     }
-                     elem.remove();
-                  } else {
-                     elem.setAttribute("onclick","game_clicked(this, id)")
-                  }
-               }
-            }
-            document.getElementById('td:0:0').setAttribute("onclick","game_over()")
-         }
-
-         function turning(){
-            turn = !turn
-            turn_show()
-         }
-         function turn_show(){
-            if(turn){
-               $("#turn").text('your turn')
-            } else {
-               $("#turn").text('enemie\'s turn')
-            }
-         }
-
-         function turn_off(){
-            $('#turn').text('')
-         }
-   </script>
-
-   <a id="button" onclick="start()"><span id="button_text">start</span></a>
-   <p id="turn"></p>
-   <p id="another_player"></p>
-   <p id="room_name"></p>
-   <p id="end"></p>
+</head>
+<body>
+   <div id="container">
+      <div id="game">
+         <p id="turn"></p>
+         <p id="opp"></p>
+      </div>
+      <div id="canv"></div>
+      <div id="data">
+         <input id="name" type="text">
+         <input id="button" type="submit" value="start" onclick="start()">
+      </div>
+   </div>
+   <script type="text/javascript" src="./chomp_client.js"></script>
 </body>
-
 </html>

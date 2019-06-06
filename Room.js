@@ -11,6 +11,7 @@ class Room{
          id: '',
          socket: null
       }
+      this.status = 1;
    }
 
    is_complete(){
@@ -25,14 +26,6 @@ class Room{
    set_second_player(id, socket){
       this.second_player.id = id
       this.second_player.socket = socket
-   }
-
-   get_first_player(){
-      return this.first_player
-   }
-
-   get_second_player(){
-      return this.second_player
    }
 
    get_name(){
@@ -64,22 +57,28 @@ class Room{
       return this.board
    }
 
-   start(){
-      this.turn = Math.random() > 0.5
+   send_in_game_data(){
       this.first_player.socket.emit('start', {
          another_player: {id: this.second_player.id},
-         group_name: this.name,
+         room_name: this.name,
          board: this.board,
          your_turn: this.turn,
-         initialized_with_my_board: true
+         initialized_with_my_board: true,
+         game_status: this.status === 1
       })
       this.second_player.socket.emit('start', {
          another_player: {id: this.first_player.id},
-         group_name: this.name,
+         room_name: this.name,
          board: this.board,
          your_turn: !this.turn,
-         initialized_with_my_board: false
+         initialized_with_my_board: false,
+         game_status: this.status === 1
       })
+   }
+
+   start(){
+      this.turn = Math.random() > 0.5
+      this.send_in_game_data()
    }
 
    end(rooms, players_map){
@@ -92,6 +91,11 @@ class Room{
       delete players_map[this.first_player.id]
       this.first_player.socket.leave(this.name)
       return rooms.filter(r => r !== this)
+   }
+
+   destroy(){
+      this.first_player = undefined
+      this.second_player = undefined
    }
 
    is_my_turn(id){
@@ -111,7 +115,23 @@ class Room{
    }
 
    get_another_player(id){
-      return this.first_player.id === id? this.second_player: this.first_player
+      return this.first_player.id === id ? this.second_player : this.first_player
+   }
+
+   set_status(status_code){
+      //  1: active
+      //  0: deactive
+      // -1: ended
+      // -2: deleted
+      this.status = status_code
+   }
+
+   get_status(){
+      return this.status
+   }
+
+   find_by_id(id){
+      return id === this.first_player.id ? this.first_player : (this.second_player.id === id ? this.second_player : null)
    }
 }
 
