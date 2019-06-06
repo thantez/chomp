@@ -7,7 +7,7 @@ const app = express()
 const http = require('http').Server(app)
 
 const PORT = process.env.PORT || 8000
-const URL = process.env.URL || '192.168.1.4'
+const URL = process.env.URL || ''
 
 process.env.PWD = process.cwd()
 
@@ -211,13 +211,15 @@ io.on('connection', (socket) => {
 });
 
 
-// setInterval(() => {
-//    https.get(URL).on('err', (e) => {
-//       console.error(e)
-//    })
-// }, 300000)
 
 http.listen(PORT, function () {
    console.log('listening on ' + PORT);
+   if(URL !== ''){
+      setInterval(() => {
+         https.get(URL).on('err', (e) => {
+            console.error(e)
+         })
+      }, 300000)
+   }
 });
 
