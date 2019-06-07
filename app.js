@@ -3,7 +3,6 @@ const err = require('./errors')
 const https = require('https')
 const morgan = require('morgan')
 const express = require('express')
-const morgan = require('morgan')
 const app = express()
 const http = require('http').Server(app)
 
