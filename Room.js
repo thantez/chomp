@@ -52,8 +52,8 @@ class Room{
       return this.board
    }
 
-   send_in_game_data(){
-      this.first_player.socket.emit('start', {
+   send_in_game_data(e){
+      this.first_player.socket.emit(e, {
          another_player: {id: this.second_player.id},
          room_name: this.name,
          board: this.board,
@@ -61,7 +61,7 @@ class Room{
          initialized_with_my_board: true,
          game_status: this.status === 1
       })
-      this.second_player.socket.emit('start', {
+      this.second_player.socket.emit(e, {
          another_player: {id: this.first_player.id},
          room_name: this.name,
          board: this.board,
@@ -73,7 +73,7 @@ class Room{
 
    start(){
       this.turn = Math.random() > 0.5
-      this.send_in_game_data()
+      this.send_in_game_data('start')
    }
 
    end(rooms, players_map){

@@ -9,8 +9,9 @@ const GRAY = "#6d6d6d";
 let font, img;
 let board = [];
 let gameLength = 10;
+let fill_board = () => {return Array.from(Array(gameLength), () => Array.from(Array(gameLength), () => 1 ))}
 let data = []
-let socket, turn, ends, id, opp_name, wait, pause_flag = false, canceled_game = false
+let socket, turn, id, opp_name, ends_flag, wait_flag, pause_flag = false
 
 function preload() {
    // Ensure the .ttf or .otf font stored in the assets directory
@@ -20,35 +21,26 @@ function preload() {
  }
 
 function setup() {
-   let canv = createCanvas(350, 450);
+   let canv = createCanvas(350, 350);
    canv.parent("canv");
 
-   board = [
-      [1,1,1,1,1,1,1,1,1,1],
-      [1,1,1,1,1,1,1,1,1,1],
-      [1,1,1,1,1,1,1,1,1,1],
-      [1,1,1,1,1,1,1,1,1,1],
-      [1,1,1,1,1,1,1,1,1,1],
-      [1,1,1,1,1,1,1,1,1,1],
-      [1,1,1,1,1,1,1,1,1,1],
-      [1,1,1,1,1,1,1,1,1,1],
-      [1,1,1,1,1,1,1,1,1,1],
-      [1,1,1,1,1,1,1,1,1,1]
-   ]
+   board = fill_board()
 
    let d = 25; // rect width and height with stroke and space
    let s = 3.5;
    let w = 1.5; // stroke weight
 
    image(img, s+w, s+w, d, d);
-   textFont(font);
-   textSize(25);
-   textAlign(CENTER, CENTER);
 
-   noLoop();
+   noLoop()
 }
 
 function draw() {
+
+   if(ends_flag){
+      return
+   }
+
    background(BACK_BROWN);
 
    for(let i = 0; i < gameLength; i++){
@@ -82,37 +74,43 @@ function draw() {
       }
    }
    
-   
-   textAlign(CENTER);
-   fill(LIGHT_BROWN);
+   let t = 'Cut the board. For restart, click on toxic chocolate!' // TODO: board?
    if(turn){
-      text('Your turn', width * 0.5, 395);
+      t = 'Your turn'
    } else {
       if(turn === false){
-         text('Your opponent, '+ opp_name, width * 0.5, 395);
-      } else if (wait) {
-         text('Please wait, '+ opp_name, width * 0.5, 395);
-      } else {
-         text('Select your favorite board', width * 0.5, 395);
-      }
+         t = 'Your opponent\'s turn, '+ opp_name
+      } else if (wait_flag) {
+         t = 'Please wait'
+      } 
    }
-   
+   $('#information').text(t)
 }
 
 function mousePressed(){
-   if(!(mouseX >= 0 && mouseX < 10 * WIDTH && mouseY >= 0 && mouseY < 10 * WIDTH) || turn === false)
+   if(!(mouseX >= 0 && mouseX < 10 * WIDTH && mouseY >= 0 && mouseY < 10 * WIDTH) || turn === false || pause_flag){
       return
+   }
    let x = Math.floor(mouseX / WIDTH)
    let y = Math.floor(mouseY / HEIGHT)
    let num = x * 10 + y
+   
    for(let i = x; i < gameLength; i++){
       for(let j = y; j < gameLength; j++){
          board[i][j] = 0;
       }
    }
-   
    if(socket){
-      socket.emit('data', { board, num })
+      if(board[0][0] === 0){
+         socket.emit('lose')
+      } else {
+         socket.emit('data', { board, num })
+         turning()
+      }
+   } else {
+      if(board[0][0] === 0){
+         board = fill_board()
+      }
    }
    r()
 }
@@ -126,7 +124,6 @@ $('document').ready(() => {
 })
 
 function start() {
-   ends = false
    socket = io();
 
    id = $("#name").val()
@@ -140,18 +137,29 @@ function start() {
       alert(data.msg)
    })
 
+   socket.on('disconnect', () => {
+      if(!ends_flag){
+         $('body').empty()
+         let disconnectionConfirm = confirm('Disconnection! Do you want to refresh?')
+         if(disconnectionConfirm){
+            window.location.reload()
+         }
+      }
+   })
+
    socket.on('wait', () => {
-      $("#button").val('wait...')
-      $("#button").attr("onclick","")
+      $("#button").val('cancel')
+      $("#button").attr("onclick","cancel()")
       $("#name").remove()
       $("#button").css('margin-left', '130px')
       
-      wait = true
+      wait_flag = true
       pause_flag = false
+
+      r()
    })
 
    socket.on('start', (data) => {
-
 
       $("#button").val('cancel')
       $("#button").attr("onclick","cancel()")
@@ -170,16 +178,13 @@ function start() {
       r()
    })
 
-   socket.on('disconnect', () => {
-      window.location.reload()
-   })
-
    socket.on('pause', () => {
       pause_flag = true
       alert('geme paused!')
    }) 
 
    socket.on('in_game', (data) => {
+
       $("#button").val('cancel')
       $("#button").attr("onclick","cancel()")
       $("#name").remove()
@@ -194,7 +199,7 @@ function start() {
       opp_name = data.another_player.id
 
       board = data.board
-      alert('your enemy comes back!')
+      alert('conection established')
       
       r();
    })
@@ -212,13 +217,21 @@ function start() {
       }
 
       turning()
-      
+
       r()
       
    })
 
    socket.on('end', (data) => {
-      // TODO: text by canvas
+      ends_flag = true
+      $('#canv').empty()
+      $("#button").val('refresh')
+      $("#button").attr("onclick","window.location.reload()")
+      if(data.winner === id){
+         $('#information').text(`${data.reason}. Winner winner, Chicken dinner!`) //TODO: is corect?
+      } else {
+         $('#information').text(`${data.reason}. You are a loser`)
+      }
    })
 }
 

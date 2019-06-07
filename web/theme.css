@@ -363,6 +363,16 @@ html, body {
 
 /* end of normalize */
 
+@font-face {
+   font-family: myriad;
+   src: url(MyriadSetPro-Semibold.ttf);
+   font-weight: bold;
+}
+
+* {
+   font-family: myriad;
+}
+
 html {
    display: table;
    margin: auto;
@@ -391,6 +401,7 @@ body {
    height: 41px;
    border: 0;
    border-radius: 3px;
+   color: #000;
 }
 
 #button:hover {
@@ -405,13 +416,19 @@ body {
 }
 
 #name, #name:hover, #name:active, #name:focus, #name:focus-within {
+   background-color: #fff;
+   color: #000;
    padding-left: 11px;
    width: 230px;
    margin-right: 10px;
    height: 32px;
    border: 4px solid;
-   border-color: #fcd75f;
+   border-color: #fff7dc;
    border-radius: 3px;
+}
+
+#name {
+   border-color: #fcd75f;
 }
 
 #game {
@@ -419,4 +436,21 @@ body {
    text-align: center;
    align-items: center;
    align-content: center;
+}
+
+#information {
+   font-size: 1.5rem;
+   text-align: center;
+   color: #fff;
+   text-shadow: 0px 4px 3px rgba(0,0,0,0.4),
+             0px 8px 13px rgba(0,0,0,0.1),
+             0px 18px 23px rgba(0,0,0,0.1);
+}
+
+#game {
+   height: 200px;
+}
+
+#container {
+   width: 350px;
 }
