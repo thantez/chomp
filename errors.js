@@ -18,5 +18,9 @@ module.exports = {
    empty_id: {
       code: 5,
       msg: 'please send id'
+   },
+   disable_game: {
+      code: 6,
+      msg: 'your opponent is disconnected yet'
    }
 }
