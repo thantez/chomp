@@ -34,9 +34,9 @@ io.on('connection', (socket) => {
    }, 1000)
 
    socket.on('set_timer', (num) => {
-      if (num instanceof Number) {
+      if (Number.isInteger(num)) {
          time_counter = num
-      } else if (num instanceof JSON) {
+      } else if (Number.isInteger(num.num)) {
          time_counter = num.num
       }
    })
