@@ -26,29 +26,33 @@ let disconnection_timeout
 
 io.on('connection', (socket) => {
    console.log('unknown connection with id: ' + socket.id)
-
+   
    // timer for any connected socket!
    let time_counter = 0;
    let timer = setInterval(() => {
       socket.emit('timer', time_counter++)
    }, 1000)
-
    socket.on('set_timer', (num) => {
-      if (Number.isInteger(num)) {
+      if (typeof num === 'number') {
          time_counter = num
-      } else if (Number.isInteger(num.num)) {
+      } else if (typeof num.num === 'number') {
          time_counter = num.num
+      } else if (typeof num === 'string') {
+         time_counter = parseInt(num)
+      } else if (typeof num.num === 'string') {
+         time_counter = parseInt(num.num)
       }
    })
-
+   
+   
    // main program
    let id = socket.id
    let current_room, current_room_name
-
+   
    socket.use((packet, next) => {
       if (packet[0] === 'cancel') {
          next()
-      } else if (packet[0] === 'init' || current_room) {
+      } else if (packet[0] === 'init' || packet[0] === 'set_timer' || current_room) {
          if (current_room && current_room.get_status() === 0) {
             socket.emit('err', err['disable_game'])
             return
@@ -58,14 +62,14 @@ io.on('connection', (socket) => {
          socket.emit('err', err['init'])
       }
    });
-
+   
    //functions
    function lose(_) {
       if (current_room && current_room.is_complete()) {
          if (current_room.is_my_turn(id)) {
-
+            
             //TODO: save game information
-
+            
             end(0, `${id} eat toxic chocolate`)
          } else {
             socket.emit('err', err['turn'])
