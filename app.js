@@ -30,7 +30,6 @@ io.on('connection', (socket) => {
    // timer for any connected socket!
    let time_counter = 0;
    let timer = setInterval(() => {
-      console.log(time_counter)
       socket.emit('timer', time_counter++)
    }, 1000)
 

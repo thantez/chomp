@@ -88,7 +88,7 @@ function draw() {
 }
 
 function mousePressed(){
-   if(!(mouseX >= 0 && mouseX < 10 * WIDTH && mouseY >= 0 && mouseY < 10 * WIDTH) || turn === false || pause_flag){
+   if(!(mouseX >= 0 && mouseX < 10 * WIDTH && mouseY >= 0 && mouseY < 10 * WIDTH) || turn === false || pause_flag || wait_flag){
       return
    }
    let x = Math.floor(mouseX / WIDTH)
@@ -166,6 +166,7 @@ function start() {
       $("#name").remove()
       $("#button").css('margin-left', '130px')
       pause_flag = false
+      wait_flag = false
 
       turn = data.your_turn
 
@@ -190,6 +191,7 @@ function start() {
       $("#name").remove()
       $("#button").css('margin-left', '130px')
       pause_flag = false
+      wait_flag = false
 
       turn = data.your_turn
       // turn
