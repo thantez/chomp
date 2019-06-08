@@ -28,6 +28,13 @@ let disconnection_timeout
 io.on('connection', (socket) => {
    console.log('unknown connection with id: '+ socket.id)
 
+   // timer for any connected socket!
+   let time_counter = 0;
+   setInterval(() => {
+      socket.emit('timer', time_counter++)
+   }, 1000)
+
+   // main program
    let id = socket.id
    let current_room, current_room_name
 
