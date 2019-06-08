@@ -29,7 +29,8 @@ io.on('connection', (socket) => {
 
    // timer for any connected socket!
    let time_counter = 0;
-   setInterval(() => {
+   let timer = setInterval(() => {
+      console.log(time_counter)
       socket.emit('timer', time_counter++)
    }, 1000)
 
@@ -220,7 +221,7 @@ io.on('connection', (socket) => {
       } else {
          console.log('unknown disconnection ' + socket.id)
       }
-      
+      clearInterval(timer)
    })
 
    socket.once('cancel', () => {
