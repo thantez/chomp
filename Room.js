@@ -1,12 +1,19 @@
 class Room{
 
-   constructor(name, player_name, player_socket, board){
+   constructor(name, player_name, player_socket, init_data){
       this.name = name
       this.first_player = {
          id: player_name,
          socket: player_socket
       }
-      this.board = board
+      if(init_data.nums){
+         for (const num of init_data.nums) {
+            this.num_to_board(num)
+         }
+      } else {
+         this.board = init_data.board
+      }
+      
       this.second_player = {
          id: '',
          socket: null
@@ -43,9 +50,13 @@ class Room{
       return this.turn
    }
 
-   change_turn_and_board(board){
+   change_turn_and_board(data){
+      if(data.num){
+         this.num_to_board(data.num)
+      } else {
+         this.board = data.board
+      }
       this.turn = !this.turn
-      this.board = board
    }
 
    get_board(){
@@ -57,6 +68,7 @@ class Room{
          another_player: {id: this.second_player.id},
          room_name: this.name,
          board: this.board,
+         nums: this.board_to_nums(),
          your_turn: this.turn,
          initialized_with_my_board: true,
          game_status: this.status === 1
@@ -65,6 +77,7 @@ class Room{
          another_player: {id: this.first_player.id},
          room_name: this.name,
          board: this.board,
+         nums: this.board_to_nums(),
          your_turn: !this.turn,
          initialized_with_my_board: false,
          game_status: this.status === 1
@@ -119,7 +132,6 @@ class Room{
       //  1: active
       //  0: deactive
       // -1: ended
-      // -2: deleted
       this.status = status_code
    }
 
@@ -129,6 +141,36 @@ class Room{
 
    find_by_id(id){
       return id === this.first_player.id ? this.first_player : (this.second_player.id === id ? this.second_player : null)
+   }
+
+   num_to_board(num){
+      let l = 10;
+      let x = num % l
+      num = parseInt(num / l)
+      let y = num
+
+      for(let i = y; i < l; i++){
+         for(let j = x; j < l; j++){
+            this.board[i][j]=0
+         }
+      }
+   }
+
+   board_to_nums(){
+      let l = 10
+      let nums = []
+      for(let i = 0; i < l; i++){
+         for(let j = 0; j < l; j++){
+            if(this.board[i][j] === 0){
+               nums.push(j)
+               break
+            }
+            if(j+1===l){
+               nums.push(j)
+            }
+         }
+      }
+      return nums
    }
 }
 

@@ -152,7 +152,7 @@ io.on('connection', (socket) => {
          current_room.set_second_player(id, socket)
          current_room_name = current_room.get_name()
       } else {
-         current_room = new room(`room${room_list.length}`, id, socket, data.board)
+         current_room = new room(`room${room_list.length}`, id, socket, data)
          current_room_name = current_room.get_name()
          room_list.push(current_room)
       }
@@ -168,10 +168,10 @@ io.on('connection', (socket) => {
    // event handlers
    socket.on('data', (data) => {
       if (current_room.is_complete()) {
-         if (current_room.is_my_turn(id) && !current_room.is_lose()) {
+         if (current_room.is_my_turn(id) && !current_room.is_lose(data.num)) {
             current_room.change_turn_and_board(data.board)
             current_room.send_data_from(id, data)
-         } else if (current_room.is_lose()) {
+         } else if (current_room.is_lose(data.num)) {
             return lose(data)
          } else {
             socket.emit('err', err['turn'])
