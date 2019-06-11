@@ -1,6 +1,6 @@
 {
   "name": "chomp_api",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "a socket server for chomp game without ai",
   "main": "index.js",
   "scripts": {
