@@ -22,5 +22,9 @@ module.exports = {
    disable_game: {
       code: 6,
       msg: 'your opponent is disconnected yet'
+   },
+   null_data: {
+      code: 7,
+      msg: 'your data event has null data. send correct json with board or num attr.'
    }
 }
