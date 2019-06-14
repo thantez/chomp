@@ -439,6 +439,7 @@ body {
 }
 
 #information {
+   margin: 0 auto;
    font-size: 1.5rem;
    text-align: center;
    color: #fff;
@@ -448,7 +449,7 @@ body {
 }
 
 #game {
-   height: 200px;
+   height: 130px;
 }
 
 #container {

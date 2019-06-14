@@ -207,15 +207,19 @@ function start() {
    })
 
    socket.on('data', (data) => {
-      let num = data.num
-      let x = num % 10
-      num = parseInt(num / 10)
-      let y = num
+      if(data.num) {
+         let num = data.num
+         let x = num % 10
+         num = parseInt(num / 10)
+         let y = num
 
-      for(let i = y; i < gameLength; i++){
-         for(let j = x; j < gameLength; j++){
-            board[i][j]=0
+         for(let i = y; i < gameLength; i++){
+            for(let j = x; j < gameLength; j++){
+               board[i][j]=0
+            }
          }
+      } else {
+         board = data.board
       }
 
       turning()
