@@ -172,7 +172,7 @@ io.on('connection', (socket) => {
       }
       if (current_room.is_complete()) {
          if (current_room.is_my_turn(id) && !current_room.is_lose(data.num)) {
-            current_room.change_turn_and_board(data.board)
+            current_room.change_turn_and_board(data)
             current_room.send_data_from(id, data)
          } else if (current_room.is_lose(data.num)) {
             return lose(data)
