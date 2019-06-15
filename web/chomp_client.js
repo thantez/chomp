@@ -1,10 +1,9 @@
 const WIDTH = 35;
 const HEIGHT = 35;
-const LIGHT_BROWN = "#fcd75f";
-const BROWN = "#866C69";
-const DARK_BROWN = "#0f0801";
-const BACK_BROWN = "#614646";
-const GRAY = "#6d6d6d";
+const LIGHT_BROWN = "#FFD8C6";
+const BROWN = "#714F45";
+const DARK_BROWN = "#4e342e";
+const BACK_BROWN = LIGHT_BROWN;
 
 let font, img;
 let board = [];
@@ -41,14 +40,14 @@ function draw() {
       return
    }
 
-   background(BACK_BROWN);
+   background(BROWN);
 
    for(let i = 0; i < gameLength; i++){
       for(let j = 0; j < gameLength; j++){
          if(board[i][j] === 1){
             let d = 25; // rect width and height with stroke and space
-            let s = 3.5;
-            let w = 1.5; // stroke weight
+            let s = 2;
+            let w = 3; // stroke weight
             let y = i * WIDTH + s + w;
             let x = j * HEIGHT + s + w;
             fill(BROWN);
@@ -66,9 +65,9 @@ function draw() {
             line(x, y + d, x + d, y + d);
 
             if(i===0 && j ===0){
-               loadImage('./sk.png', img => {
+               
                   image(img, s+w, s+w, d, d);
-                });
+               
             }
          }
       }
