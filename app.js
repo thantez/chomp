@@ -136,6 +136,7 @@ io.on('connection', (socket) => {
                      room.send_in_game_data('in_game')
                   }
                   clearTimeout(disconnection_timeout)
+                  return
                }
             });
             if (!players_map[id]) {
