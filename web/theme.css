@@ -373,15 +373,10 @@ html, body {
    font-family: myriad;
 }
 
-html {
-   display: table;
-   margin: auto;
-}
-
 body {
-   vertical-align: middle;
    display: flex;
-   flex-direction: column;
+   justify-content: center;
+   align-items: center;
    background-color: #FFD8C6;
 }
 
