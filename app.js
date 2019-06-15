@@ -216,18 +216,20 @@ io.on('connection', (socket) => {
             disconnection_timeout = setTimeout(() => {
                // check that client comes back or not!
                if (!players_map[id]) {
-                  let winner = current_room.get_another_player(id)
-                  let loser = current_room.find_by_id(id)
+                  if(current_room.is_complete()) {
+                     let winner = current_room.get_another_player(id)
+                     let loser = current_room.find_by_id(id)
 
-                  io.to(current_room_name).emit('end', {
-                     code: 2,
-                     reason: `player ${loser.id} disconnected`,
-                     winner: winner.id,
-                     loser: loser.id
-                  })
+                     io.to(current_room_name).emit('end', {
+                        code: 2,
+                        reason: `player ${loser.id} disconnected`,
+                        winner: winner.id,
+                        loser: loser.id
+                     })
+
+                     winner.socket.disconnect()
+                  }
                   current_room.set_status(-1)
-
-                  winner.socket.disconnect()
 
                   delete players_map[id]
                   socket.leave(current_room_name)
@@ -235,7 +237,7 @@ io.on('connection', (socket) => {
                   current_room.destroy()
                   room_list = room_list.filter(r => r !== current_room)
 
-                  console.log(`room ${current_room_name} removed`)
+                  console.log(`room ${current_room_name} removed`)                  
                }
             }, life_time)
          }

@@ -24,7 +24,7 @@ class Room{
    fill_board () {return Array.from(Array(gameLength), () => Array.from(Array(gameLength), () => 1 ))}
 
    is_complete(){
-      return this.second_player.socket !== null
+      return (this.second_player && this.second_player.socket !== null) && (this.first_player.socket !== null)
    }
 
    set_second_player(id, socket){
