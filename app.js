@@ -143,7 +143,7 @@ io.on('connection', (socket) => {
                }
             });
             if (!players_map[id]) {
-               throw new Error(players_map[id])
+               throw new Error(id)
             }
          }
       }
