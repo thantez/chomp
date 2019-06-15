@@ -11,7 +11,7 @@ class Room{
             this.num_to_board(num)
          }
       } else {
-         this.board = init_data.board
+         this.board = init_data.board || fill_board()
       }
       
       this.second_player = {
@@ -20,6 +20,7 @@ class Room{
       }
       this.status = 1;
    }
+   fill_board () {return Array.from(Array(gameLength), () => Array.from(Array(gameLength), () => 1 ))}
 
    is_complete(){
       return this.second_player.socket !== null
