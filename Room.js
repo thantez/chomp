@@ -7,11 +7,12 @@ class Room{
          socket: player_socket
       }
       if(init_data.nums){
+         this.board = this.fill_board()
          for (const num of init_data.nums) {
             this.num_to_board(num)
          }
       } else {
-         this.board = init_data.board || fill_board()
+         this.board = init_data.board || this.fill_board()
       }
       
       this.second_player = {
