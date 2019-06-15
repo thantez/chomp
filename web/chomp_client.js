@@ -40,7 +40,7 @@ function draw() {
       return
    }
 
-   background(BROWN);
+   background(DARK_BROWN);
 
    for(let i = 0; i < gameLength; i++){
       for(let j = 0; j < gameLength; j++){
@@ -50,7 +50,7 @@ function draw() {
          let y = i * WIDTH + s + w;
          let x = j * HEIGHT + s + w;
          if(board[i][j] === 1){
-            fill(BROWN);
+            fill(DARK_BROWN);
             noStroke();
             rect(x, y, d, d);
             // Draw yellow semi box
@@ -60,12 +60,12 @@ function draw() {
             line(x, y, x, y + d);
             // draw black semi box
             strokeWeight(w);
-            stroke(DARK_BROWN);
+            stroke(BROWN);
             line(x + d, y, x + d, y + d);
             line(x, y + d, x + d, y + d);
 
             if(i===0 && j ===0){
-               image(img, s+2*w, s+2*w, d-2*w, d-2*w);
+               image(img, s+3*w, s+3*w, d-4*w, d-4*w);
             }
          } else {
             fill(LIGHT_BROWN);
