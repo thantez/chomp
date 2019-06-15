@@ -162,15 +162,12 @@ class Room{
       for(let i = 0; i < l; i++){
          for(let j = 0; j < l; j++){
             if(this.board[i][j] === 0){
-               nums.push(j)
+               nums.push(i*10+j)
                break
-            }
-            if(j+1===l){
-               nums.push(j)
             }
          }
       }
-      return nums
+      return nums.reverse()
    }
 }
 

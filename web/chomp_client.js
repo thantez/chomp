@@ -49,8 +49,8 @@ function draw() {
             let d = 25; // rect width and height with stroke and space
             let s = 3.5;
             let w = 1.5; // stroke weight
-            let x = i * WIDTH + s + w;
-            let y = j * HEIGHT + s + w;
+            let y = i * WIDTH + s + w;
+            let x = j * HEIGHT + s + w;
             fill(BROWN);
             noStroke();
             rect(x, y, d, d);
@@ -91,15 +91,16 @@ function mousePressed(){
    if(!(mouseX >= 0 && mouseX < 10 * WIDTH && mouseY >= 0 && mouseY < 10 * WIDTH) || turn === false || pause_flag || wait_flag){
       return
    }
-   let x = Math.floor(mouseX / WIDTH)
-   let y = Math.floor(mouseY / HEIGHT)
+   let y = Math.floor(mouseX / WIDTH)
+   let x = Math.floor(mouseY / HEIGHT)
    let num = x * 10 + y
-   
+   console.log(num, x, y)
    for(let i = x; i < gameLength; i++){
       for(let j = y; j < gameLength; j++){
          board[i][j] = 0;
       }
    }
+   console.log(board)
    if(socket){
       if(board[0][0] === 0){
          socket.emit('lose')
@@ -112,10 +113,6 @@ function mousePressed(){
          board = fill_board()
       }
    }
-   r()
-}
-
-function mouseReleased() {
    r()
 }
 
@@ -160,7 +157,7 @@ function start() {
    })
 
    socket.on('start', (data) => {
-
+      console.log(data)
       $("#button").val('cancel')
       $("#button").attr("onclick","cancel()")
       $("#name").remove()
@@ -207,14 +204,15 @@ function start() {
    })
 
    socket.on('data', (data) => {
+     console.log(data)
       if(data.num) {
          let num = data.num
-         let x = num % 10
+         let y = num % 10
          num = parseInt(num / 10)
-         let y = num
+         let x = num
 
-         for(let i = y; i < gameLength; i++){
-            for(let j = x; j < gameLength; j++){
+         for(let i = x; i < gameLength; i++){
+            for(let j = y; j < gameLength; j++){
                board[i][j]=0
             }
          }
