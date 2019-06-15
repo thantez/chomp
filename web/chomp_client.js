@@ -44,12 +44,12 @@ function draw() {
 
    for(let i = 0; i < gameLength; i++){
       for(let j = 0; j < gameLength; j++){
+         let d = 24; // rect width and height with stroke and space
+         let s = 3; // spcae
+         let w = 3; // stroke weight
+         let y = i * WIDTH + s + w;
+         let x = j * HEIGHT + s + w;
          if(board[i][j] === 1){
-            let d = 25; // rect width and height with stroke and space
-            let s = 2;
-            let w = 3; // stroke weight
-            let y = i * WIDTH + s + w;
-            let x = j * HEIGHT + s + w;
             fill(BROWN);
             noStroke();
             rect(x, y, d, d);
@@ -65,10 +65,12 @@ function draw() {
             line(x, y + d, x + d, y + d);
 
             if(i===0 && j ===0){
-               
-                  image(img, s+w, s+w, d, d);
-               
+               image(img, s+2*w, s+2*w, d-2*w, d-2*w);
             }
+         } else {
+            fill(LIGHT_BROWN);
+            noStroke();
+            rect(x-s-w, y-s-w, d+4*s, d+4*s);
          }
       }
    }
@@ -93,7 +95,9 @@ function mousePressed(){
    let y = Math.floor(mouseX / WIDTH)
    let x = Math.floor(mouseY / HEIGHT)
    let num = x * 10 + y
-   console.log(num, x, y)
+   if(board[x][y]===0){
+      return
+   }
    for(let i = x; i < gameLength; i++){
       for(let j = y; j < gameLength; j++){
          board[i][j] = 0;
@@ -231,7 +235,7 @@ function start() {
       $("#button").val('refresh')
       $("#button").attr("onclick","window.location.reload()")
       if(data.winner === id){
-         $('#information').text(`${data.reason}. Winner winner, Chicken dinner!`) //TODO: is corect?
+         $('#information').text(`${data.reason}. Winner winner, Chicken dinner!`)
       } else {
          $('#information').text(`${data.reason}. You are a loser`)
       }

@@ -392,43 +392,38 @@ body {
 #data {
    display: flex;
    margin-top: 5px;
-   margin-left: 4px;
 }
 
 #button {
-   background-color: #fcd75f;
-   width: 80px;
-   height: 41px;
+   background-color: #714F45;
+   width: 100px;
+   height: 44px;
    border: 0;
    border-radius: 3px;
-   color: #000;
+   color: #FFF;
 }
 
 #button:hover {
-   background-color: #fff7dc;
-   width: 80px;
-   height: 41px;
-   border: 0;
-   border-radius: 3px;
+   background-color: rgb(49, 49, 49);
    -webkit-box-shadow: 2px 2px 7px -1px rgba(0,0,0,0.66);
    -moz-box-shadow: 2px 2px 7px -1px rgba(0,0,0,0.66);
    box-shadow: 2px 2px 7px -1px rgba(0,0,0,0.66);
 }
 
 #name, #name:hover, #name:active, #name:focus, #name:focus-within {
-   background-color: #fff;
+   background-color: #FFD8C6;
    color: #000;
-   padding-left: 11px;
-   width: 230px;
-   margin-right: 10px;
+   padding-left: 20px;
+   width: 250px;
+   margin-right: 15px;
    height: 32px;
-   border: 4px solid;
-   border-color: #fff7dc;
+   border: 5px solid;
+   border-color: rgb(49, 49, 49);
    border-radius: 3px;
 }
 
 #name {
-   border-color: #fcd75f;
+   border-color: #714F45;
 }
 
 #game {
@@ -442,10 +437,7 @@ body {
    margin: 0 auto;
    font-size: 1.5rem;
    text-align: center;
-   color: #000;
-   text-shadow: 0px 4px 3px rgba(0,0,0,0.4),
-             0px 8px 13px rgba(0,0,0,0.1),
-             0px 18px 23px rgba(0,0,0,0.1);
+   color: rgb(49, 49, 49);
 }
 
 #game {
