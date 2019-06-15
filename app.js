@@ -117,6 +117,7 @@ io.on('connection', (socket) => {
 
    // init
    socket.once('init', (data) => {
+      let reconnect_flag = false
       id = data.id
       if (id in players_map) {
          if (players_map[id]) {
@@ -127,6 +128,8 @@ io.on('connection', (socket) => {
                if (founded_player) {
                   current_room = room
                   room.set_status(1)
+                  current_room_name = current_room.get_name()
+                  socket.join(current_room_name)
                   founded_player.socket = socket
                   founded_player.id = id
                   players_map[id] = socket
@@ -136,13 +139,16 @@ io.on('connection', (socket) => {
                      room.send_in_game_data('in_game')
                   }
                   clearTimeout(disconnection_timeout)
-                  return
+                  reconnect_flag = true
                }
             });
             if (!players_map[id]) {
                throw new Error(players_map[id])
             }
          }
+      }
+      if(reconnect_flag){
+         return
       }
       if (!id) {
          return socket.emit('err', err['empty_id'])
