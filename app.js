@@ -143,7 +143,7 @@ io.on('connection', (socket) => {
                }
             });
             if (!players_map[id]) {
-               throw new Error(id)
+               return socket.emit('err', err['player_id'])
             }
          }
       }
@@ -154,6 +154,9 @@ io.on('connection', (socket) => {
          return socket.emit('err', err['empty_id'])
       }
       players_map[id] = socket
+      if(count() === 0){
+         return socket.emit('err', err['empty_rooms'])
+      }
       if (count() % 2 == 0) {
          current_room = room_list[room_list.length - 1]
          current_room.set_second_player(id, socket)

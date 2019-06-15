@@ -26,5 +26,13 @@ module.exports = {
    null_data: {
       code: 7,
       msg: 'your data event has null data. send correct json with board or num attr.'
+   },
+   empty_rooms: {
+      code: 8,
+      msg: 'I don\'t know what happend but we have empty rooms :/'
+   },
+   player_id: {
+      code: 9,
+      msg: 'player_id exists but has not socket'
    }
 }
