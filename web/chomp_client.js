@@ -5,7 +5,7 @@ const BROWN = "#714F45";
 const DARK_BROWN = "#4e342e";
 const BACK_BROWN = LIGHT_BROWN;
 
-let font, img, eatingSound, deathSound, winSound, youWinSound;
+let font, img, eatingSound, deathSound, winSound, youWinSound, alertSound;
 let board = [];
 let gameLength = 10;
 let fill_board = () => {return Array.from(Array(gameLength), () => Array.from(Array(gameLength), () => 1 ))}
@@ -21,6 +21,7 @@ function preload() {
    deathSound = loadSound('./death.mp3')
    winSound = loadSound('./win.mp3')
    youWinSound = loadSound('./youWin.mp3')
+   alertSound = loadSound('./alert.mp3')
  }
 
 function setup() {
@@ -133,6 +134,7 @@ function start() {
    })
 
    socket.on('err', (data) => {
+      alertSound.play()
       alert(data.msg)
    })
 
@@ -158,6 +160,7 @@ function start() {
 
    socket.on('start', (data) => {
       console.log(data)
+      alertSound.play()
       $("#button").val('cancel')
       $("#button").attr("onclick","cancel()")
       $("#name").remove()
@@ -176,6 +179,7 @@ function start() {
 
    socket.on('pause', () => {
       pause_flag = true
+      alertSound.play()
       alert('geme paused!')
    }) 
 
@@ -200,7 +204,8 @@ function start() {
    })
 
    socket.on('data', (data) => {
-     console.log(data)
+      alertSound.play()
+      console.log(data)
       if(data.num) {
          let num = data.num
          let y = num % 10
