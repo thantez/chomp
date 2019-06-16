@@ -134,8 +134,7 @@ function start() {
    })
 
    socket.on('err', (data) => {
-      alertSound.play()
-      alert(data.msg)
+      alerter(data.msg)
    })
 
    socket.on('disconnect', () => {
@@ -160,7 +159,7 @@ function start() {
 
    socket.on('start', (data) => {
       console.log(data)
-      alertSound.play()
+      alerter()
       $("#button").val('cancel')
       $("#button").attr("onclick","cancel()")
       $("#name").remove()
@@ -179,8 +178,7 @@ function start() {
 
    socket.on('pause', () => {
       pause_flag = true
-      alertSound.play()
-      alert('geme paused!')
+      alerter('geme paused!')
    }) 
 
    socket.on('in_game', (data) => {
@@ -204,7 +202,7 @@ function start() {
    })
 
    socket.on('data', (data) => {
-      alertSound.play()
+      alerter()
       console.log(data)
       if(data.num) {
          let num = data.num
@@ -254,4 +252,12 @@ function cancel(){
 
 function turning(){
    turn = !turn
+}
+
+function alerter(msg = null){
+   if(eatingSound.isPlaying())
+      eatingSound.stop()
+   alertSound.play()
+   if(msg)
+      alert(msg)
 }
