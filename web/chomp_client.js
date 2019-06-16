@@ -5,7 +5,7 @@ const BROWN = "#714F45";
 const DARK_BROWN = "#4e342e";
 const BACK_BROWN = LIGHT_BROWN;
 
-let font, img;
+let font, img, eatingSound, deathSound, winSound, youWinSound;
 let board = [];
 let gameLength = 10;
 let fill_board = () => {return Array.from(Array(gameLength), () => Array.from(Array(gameLength), () => 1 ))}
@@ -15,8 +15,12 @@ let socket, turn, id, opp_name, ends_flag, wait_flag, pause_flag = false
 function preload() {
    // Ensure the .ttf or .otf font stored in the assets directory
    // is loaded before setup() and draw() are called
-   font = loadFont('./MyriadSetPro-Semibold.ttf');
    img = loadImage('./sk.png');
+   soundFormats('mp3');
+   eatingSound = loadSound('./eating.mp3')
+   deathSound = loadSound('./death.mp3')
+   winSound = loadSound('./win.mp3')
+   youWinSound = loadSound('./youWin.mp3')
  }
 
 function setup() {
@@ -24,14 +28,6 @@ function setup() {
    canv.parent("canv");
 
    board = fill_board()
-
-   let d = 25; // rect width and height with stroke and space
-   let s = 3.5;
-   let w = 1.5; // stroke weight
-
-   image(img, s+w, s+w, d, d);
-
-   noLoop()
 }
 
 function draw() {
@@ -105,9 +101,13 @@ function mousePressed(){
    }
    console.log(board)
    if(socket){
+      if (eatingSound.isPlaying()) {
+         eatingSound.stop()
+      }
       if(board[0][0] === 0){
          socket.emit('lose')
       } else {
+         eatingSound.play()
          socket.emit('data', { board, num })
          turning()
       }
@@ -116,7 +116,6 @@ function mousePressed(){
          board = fill_board()
       }
    }
-   r()
 }
 
 $('document').ready(() => {
@@ -155,8 +154,6 @@ function start() {
       
       wait_flag = true
       pause_flag = false
-
-      r()
    })
 
    socket.on('start', (data) => {
@@ -175,8 +172,6 @@ function start() {
       opp_name = data.another_player.id
 
       board = data.board
-
-      r()
    })
 
    socket.on('pause', () => {
@@ -202,8 +197,6 @@ function start() {
 
       board = data.board
       alert('conection established')
-      
-      r();
    })
 
    socket.on('data', (data) => {
@@ -224,9 +217,6 @@ function start() {
       }
 
       turning()
-
-      r()
-      
    })
 
    socket.on('end', (data) => {
@@ -234,9 +224,17 @@ function start() {
       $('#canv').empty()
       $("#button").val('refresh')
       $("#button").attr("onclick","window.location.reload()")
+      if(eatingSound.isPlaying()){
+         eatingSound.stop()
+      }
       if(data.winner === id){
+         winSound.play()
+         setTimeout(() => {
+            youWinSound.play()
+         }, 1980)
          $('#information').text(`${data.reason}. Winner winner, Chicken dinner!`)
-      } else {
+      } else {  
+         deathSound.play()
          $('#information').text(`${data.reason}. You are a loser`)
       }
    })
@@ -251,10 +249,4 @@ function cancel(){
 
 function turning(){
    turn = !turn
-}
-
-function r(){
-   // loop for a little time!
-   loop()
-   noLoop()
 }
