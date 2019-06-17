@@ -41,8 +41,8 @@ function draw() {
 
    for(let i = 0; i < gameLength; i++){
       for(let j = 0; j < gameLength; j++){
-         let d = 24; // rect width and height with stroke and space
-         let s = 3; // spcae
+         let d = 26.5; // rect width and height with stroke and space
+         let s = 0.5; // spcae
          let w = 3; // stroke weight
          let y = i * WIDTH + s + w;
          let x = j * HEIGHT + s + w;
@@ -79,7 +79,7 @@ function draw() {
          } else {
             fill(LIGHT_BROWN);
             noStroke();
-            rect(x-s-w, y-s-w, d+4*s, d+4*s);
+            rect(x-s-w, y-s-w, 2*d, 2*d);
          }
       }
    }
