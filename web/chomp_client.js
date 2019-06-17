@@ -51,15 +51,27 @@ function draw() {
             noStroke();
             rect(x, y, d, d);
             // Draw yellow semi box
-            strokeWeight(w);
-            stroke(LIGHT_BROWN);
-            line(x, y, x + d, y);
-            line(x, y, x, y + d);
+            fill(LIGHT_BROWN)
+            noStroke()
+            beginShape()
+            vertex(x, y)
+            vertex(x+d, y)
+            vertex(x+d-w, y+w)
+            vertex(x+w, y+w)
+            vertex(x+w, y+d-w)
+            vertex(x, y+d)
+            endShape(CLOSE)
             // draw black semi box
-            strokeWeight(w);
-            stroke(BROWN);
-            line(x + d, y, x + d, y + d);
-            line(x, y + d, x + d, y + d);
+            fill(BROWN)
+            noStroke()
+            beginShape()
+            vertex(x, y+d)
+            vertex(x+w, y+d-w)
+            vertex(x+d-w, y+d-w)
+            vertex(x+d-w, y+w)
+            vertex(x+d, y)
+            vertex(x+d, y+d)
+            endShape(CLOSE)
 
             if(i===0 && j ===0){
                image(img, s+3*w, s+3*w, d-4*w, d-4*w);
