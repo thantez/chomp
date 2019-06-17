@@ -5,7 +5,7 @@ const BROWN = "#714F45";
 const DARK_BROWN = "#4e342e";
 const BACK_BROWN = LIGHT_BROWN;
 
-let font, img, eatingSound, deathSound, winSound, youWinSound, alertSound;
+let font, img, eatingSound, deathSound, winSound, youWinSound, alertSound, swordSound;
 let board = [];
 let gameLength = 10;
 let fill_board = () => {return Array.from(Array(gameLength), () => Array.from(Array(gameLength), () => 1 ))}
@@ -22,6 +22,7 @@ function preload() {
    winSound = loadSound('./win.mp3')
    youWinSound = loadSound('./youWin.mp3')
    alertSound = loadSound('./alert.mp3')
+   swordSound = loadSound('./sword.mp3')
  }
 
 function setup() {
@@ -125,8 +126,14 @@ function mousePressed(){
          turning()
       }
    } else {
+      if(swordSound.isPlaying()){
+         swordSound.stop()
+      }
       if(board[0][0] === 0){
          board = fill_board()
+         alerter()
+      } else {
+         swordSound.play()
       }
    }
 }
